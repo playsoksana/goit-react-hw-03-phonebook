@@ -1,15 +1,17 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import Form from './components/Form/Form';
 import Filter from './components/Filter/Filter';
 import ContactList from './components/ContactList/ContactList';
 import Container from './components/Container/Container';
-
+import ButtonIcon from './components/Button/ButtonIcon';
+import Modal from './components/Modal/Modal';
 import { ToastContainer } from 'react-toastify';
+import { ReactComponent as AddIcon } from './icon/plus.svg';
 import 'react-toastify/dist/ReactToastify.css';
 import notify from './helpers/notify';
 import './index.css';
 
-class App extends Component {
+class App extends PureComponent {
   static defaultProps = {
     contacts: [
       { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
@@ -21,7 +23,28 @@ class App extends Component {
   state = {
     contacts: [...this.props.contacts],
     filter: '',
+    isVisibleModal: false,
   };
+
+
+  componentDidMount(){
+    if (localStorage.getItem("contacts")) {
+      this.setState({
+        contacts: JSON.parse(localStorage.getItem("contacts"))
+      })
+    }
+   }
+
+
+  componentDidUpdate (prevProps, prevState) {
+    const {contacts} = this.state
+    if(prevState.contacts !== contacts)  {
+      localStorage.setItem("contacts", JSON.stringify(contacts))}
+      if (contacts.length > prevState.contacts.length && prevState.contacts.length!==0) {
+        this.setState({
+          isVisibleModal: false
+        })
+      }}
 
   addContactOnSubmit = data => {
     if (
@@ -30,6 +53,7 @@ class App extends Component {
       notify(data.name);
       return;
     }
+
     const contact = {
       name: data.name.toLowerCase(),
       number: data.number,
@@ -40,6 +64,7 @@ class App extends Component {
       contacts: [contact, ...preventState.contacts],
     }));
   };
+
 
   filterOnRender = () => {
     const { contacts, filter } = this.state;
@@ -60,37 +85,39 @@ class App extends Component {
     }));
   };
 
+  toggleIsVisible = () => {   
+       this.setState((prevState)=>({
+         isVisibleModal: !prevState.isVisibleModal
+       }))   
+  }
+
+
   render() {
-    const {
-      addContactOnSubmit,
-      onChangeInputFilter,
-      filterOnRender,
-      deleteContact,
-    } = this;
-    const { filter, contacts } = this.state;
+    const {addContactOnSubmit,  onChangeInputFilter,  filterOnRender,  deleteContact, toggleIsVisible} = this;
+    const { filter, contacts, isVisibleModal } = this.state;
 
     return (
       <section>
         <h1>Phonebook</h1>
-        <Container>
-          <Form onSubmit={addContactOnSubmit} />
-        </Container>
-
-        {contacts.length ? (
+     
+      <ButtonIcon toggleIsVisible={toggleIsVisible} aria="add contact">
+        <AddIcon width="40px" height="40px"/>
+        </ButtonIcon> 
+         {contacts.length ? 
           <Container>
             <Filter value={filter} filterContacts={onChangeInputFilter} />
           </Container>
-        ) : (
-          ''
-        )}
+         : ''}
 
         <Container>
           <ContactList
             contactsRender={filterOnRender()}
             deleteContactOnClick={deleteContact}
-            contacts={this.state.contacts}
+            contacts={contacts}
           />
         </Container>
+        
+      
 
         <ToastContainer
           position="top-right"
@@ -103,7 +130,14 @@ class App extends Component {
           draggable
           pauseOnHover
         />
+
+
+        {isVisibleModal&&<Modal toggleIsVisible={toggleIsVisible}>   
+        <Form onSubmit={addContactOnSubmit} />
+        </Modal>}
+        
       </section>
+      
     );
   }
 }

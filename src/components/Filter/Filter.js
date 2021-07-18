@@ -1,18 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styles from './Filter.module.css';
+import Input from '../Input';
+import Styles from './Filter.module.css'
 
-const Filter = ({ value, filterContacts }) => (
-  <label className={styles.label}>
-    Find contact by name
-    <input
-      className={styles.search}
-      value={value}
-      onChange={filterContacts}
-      placeholder="Enter"
-    />
-  </label>
-);
+
+const Filter = ({ value, filterContacts }) => 
+<div className={Styles.Container}>
+
+<Input
+value={value}
+name="search"
+textLabel="Find contact by name"
+placeholder="Enter"
+onChangeInput={filterContacts}
+/>
+</div>
+
 
 Filter.propTypes = {
   value: PropTypes.string.isRequired,

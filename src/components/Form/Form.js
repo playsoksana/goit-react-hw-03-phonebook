@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Button from '../Button';
 import { v4 as uuidv4 } from 'uuid';
 import styles from './Form.module.css';
+import Input from '../Input';
 
 class Form extends Component {
   state = {
@@ -10,6 +11,7 @@ class Form extends Component {
   };
 
   onChangeInput = ev => {
+    
     const { name, value } = ev.currentTarget;
     this.setState({
       [name]: value,
@@ -44,38 +46,33 @@ class Form extends Component {
     return (
       <form className={styles.form} onSubmit={addContactOnPhonebook}>
         <div className={styles.container}>
-          <input
-            id="name"
-            className={styles.input}
+        <Input
+        id="name"        
             value={name}
             placeholder=" "
-            onChange={onChangeInput}
+            onChangeInput={onChangeInput}
             type="text"
             name="name"
             pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
             title="Имя может состоять только из букв, апострофа, тире и пробелов. Например Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan и т. п."
-            required
-          />
-          <label className={styles.label} htmlFor="name">
-            Name
-          </label>
-        </div>
-        <div className={styles.container}>
-          <input
-            id="number"
-            className={styles.input}
-            type="tel"
+            textLabel="name"
+        />
+ </div>
+
+<div className={styles.container}>
+        <Input
+        id="number"        
             value={number}
             placeholder=" "
-            onChange={onChangeInput}
+            onChangeInput={onChangeInput}
+            type="tel"
             name="number"
             pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
             title="Номер телефона должен состоять цифр и может содержать пробелы, тире, круглые скобки и может начинаться с +"
-            required
-          />
-          <label className={styles.label} htmlFor="number">
-            Number
-          </label>
+            textLabel="number" 
+        />
+        
+                
         </div>
         <Button />
       </form>
