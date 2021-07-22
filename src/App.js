@@ -10,6 +10,7 @@ import { ReactComponent as AddIcon } from './icon/plus.svg';
 import 'react-toastify/dist/ReactToastify.css';
 import notify from './helpers/notify';
 import './index.css';
+import { getLocal, setLocal } from './helpers/localStorage';
 
 class App extends PureComponent {
   static defaultProps = {
@@ -26,25 +27,26 @@ class App extends PureComponent {
     isVisibleModal: false,
   };
 
-
-  componentDidMount(){
-    if (localStorage.getItem("contacts")) {
+  componentDidMount() {
+    if (localStorage.getItem('contacts')) {
       this.setState({
-        contacts: JSON.parse(localStorage.getItem("contacts"))
-      })
+        contacts: getLocal(),
+      });
     }
-   }
+  }
 
-
-  componentDidUpdate (prevProps, prevState) {
-    const {contacts} = this.state
-    if(prevState.contacts !== contacts)  {
-      localStorage.setItem("contacts", JSON.stringify(contacts))}
-      if (contacts.length > prevState.contacts.length && prevState.contacts.length!==0) {
-        this.setState({
-          isVisibleModal: false
-        })
-      }}
+  componentDidUpdate(prevProps, prevState) {
+    const { contacts } = this.state;
+    setLocal(this.state.contacts, prevState.contacts);
+    if (
+      contacts.length > prevState.contacts.length &&
+      prevState.contacts.length !== 0
+    ) {
+      this.setState({
+        isVisibleModal: false,
+      });
+    }
+  }
 
   addContactOnSubmit = data => {
     if (
@@ -65,7 +67,6 @@ class App extends PureComponent {
     }));
   };
 
-
   filterOnRender = () => {
     const { contacts, filter } = this.state;
     return contacts.filter(({ name }) =>
@@ -85,29 +86,36 @@ class App extends PureComponent {
     }));
   };
 
-  toggleIsVisible = () => {   
-       this.setState((prevState)=>({
-         isVisibleModal: !prevState.isVisibleModal
-       }))   
-  }
-
+  toggleIsVisible = () => {
+    this.setState(prevState => ({
+      isVisibleModal: !prevState.isVisibleModal,
+    }));
+  };
 
   render() {
-    const {addContactOnSubmit,  onChangeInputFilter,  filterOnRender,  deleteContact, toggleIsVisible} = this;
+    const {
+      addContactOnSubmit,
+      onChangeInputFilter,
+      filterOnRender,
+      deleteContact,
+      toggleIsVisible,
+    } = this;
     const { filter, contacts, isVisibleModal } = this.state;
 
     return (
       <section>
         <h1>Phonebook</h1>
-     
-      <ButtonIcon toggleIsVisible={toggleIsVisible} aria="add contact">
-        <AddIcon width="40px" height="40px"/>
-        </ButtonIcon> 
-         {contacts.length ? 
+
+        <ButtonIcon toggleIsVisible={toggleIsVisible} aria="add contact">
+          <AddIcon width="40px" height="40px" />
+        </ButtonIcon>
+        {contacts.length ? (
           <Container>
             <Filter value={filter} filterContacts={onChangeInputFilter} />
           </Container>
-         : ''}
+        ) : (
+          ''
+        )}
 
         <Container>
           <ContactList
@@ -116,8 +124,6 @@ class App extends PureComponent {
             contacts={contacts}
           />
         </Container>
-        
-      
 
         <ToastContainer
           position="top-right"
@@ -131,13 +137,12 @@ class App extends PureComponent {
           pauseOnHover
         />
 
-
-        {isVisibleModal&&<Modal toggleIsVisible={toggleIsVisible}>   
-        <Form onSubmit={addContactOnSubmit} />
-        </Modal>}
-        
+        {isVisibleModal && (
+          <Modal toggleIsVisible={toggleIsVisible}>
+            <Form onSubmit={addContactOnSubmit} />
+          </Modal>
+        )}
       </section>
-      
     );
   }
 }
