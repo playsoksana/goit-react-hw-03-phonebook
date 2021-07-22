@@ -1,16 +1,16 @@
 import React, { PureComponent } from 'react';
-import Form from './components/Form/Form';
-import Filter from './components/Filter/Filter';
-import ContactList from './components/ContactList/ContactList';
-import Container from './components/Container/Container';
-import ButtonIcon from './components/Button/ButtonIcon';
-import Modal from './components/Modal/Modal';
+import Form from './Form/Form';
+import Filter from './Filter/Filter';
+import ContactList from './ContactList/ContactList';
+import Container from './Container/Container';
+import ButtonIcon from './Button/ButtonIcon';
+import Modal from './Modal/Modal';
 import { ToastContainer } from 'react-toastify';
-import { ReactComponent as AddIcon } from './icon/plus.svg';
+import { ReactComponent as AddIcon } from '../icon/plus.svg';
 import 'react-toastify/dist/ReactToastify.css';
-import notify from './helpers/notify';
-import './index.css';
-import { getLocal, setLocal } from './helpers/localStorage';
+import notify from '../helpers/notify';
+import '../index.css';
+import { getLocal, setLocal } from '../helpers/localStorage';
 
 class App extends PureComponent {
   static defaultProps = {
